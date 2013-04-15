@@ -602,6 +602,8 @@ class TimelineStage(Clutter.ScrollActor, Zoomable):
 
         for track in bTimeline.get_tracks():
             self.connectTrack(track)
+        for layer in bTimeline.get_layers():
+            self._add_layer(layer)
         self.bTimeline.connect("layer-added", self._layerAddedCb)
         self.bTimeline.connect("layer-removed", self._layerRemovedCb)
         self.zoomChanged()
@@ -702,9 +704,7 @@ class TimelineStage(Clutter.ScrollActor, Zoomable):
     def zoomChanged(self):
         self._redraw()
 
-    # Callbacks
-
-    def _layerAddedCb(self, timeline, layer):
+    def _add_layer(self, layer):
         for element in self.elements:
             self._setElementY(element)
         self.save_easing_state()
@@ -713,6 +713,11 @@ class TimelineStage(Clutter.ScrollActor, Zoomable):
         self._container.vadj.props.upper = self.props.height
         self._container.controls.addLayerControl(layer)
         self._updatePlayHead()
+
+    # Callbacks
+
+    def _layerAddedCb(self, timeline, layer):
+        self._add_layer(layer)
 
     def _layerRemovedCb(self, timeline, layer):
         layer.disconnect_by_func(self._clipAddedCb)

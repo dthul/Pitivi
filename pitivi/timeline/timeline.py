@@ -1001,7 +1001,7 @@ class Timeline(Gtk.VBox, Zoomable):
         self.point.y = 0
 
         self.zoomBox = ZoomBox(self)
-        self.pack_end(self.zoomBox, False, False, False)
+#        self.pack_end(self.zoomBox, False, False, False)
 
         self._packScrollbars(self)
 
@@ -1202,9 +1202,8 @@ class Timeline(Gtk.VBox, Zoomable):
         vbox.pack_end(hbox, True, True, True)
 
         hbox = Gtk.HBox()
-        self.playButton = Gtk.Button("play")
-        self.playButton.set_size_request(CONTROL_WIDTH, -1)
-        hbox.pack_start(self.playButton, False, True, False)
+        self.zoomBox.set_size_request(CONTROL_WIDTH, -1)
+        hbox.pack_start(self.zoomBox, False, True, False)
         hbox.pack_start(self.ruler, True, True, True)
 
         vbox.pack_end(hbox, False, True, False)

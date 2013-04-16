@@ -1571,16 +1571,16 @@ class Timeline(Gtk.VBox, Zoomable):
         """
         Split clips at the current playhead position, regardless of selections.
         """
-        self.timeline.enable_update(False)
+        self.bTimeline.enable_update(False)
         position = self.app.current.pipeline.getPosition()
-        for track in self.timeline.get_tracks():
+        for track in self.bTimeline.get_tracks():
             for element in track.get_elements():
                 start = element.get_start()
                 end = start + element.get_duration()
                 if start < position and end > position:
                     clip = element.get_parent()
                     clip.split(position)
-        self.timeline.enable_update(True)
+        self.bTimeline.enable_update(True)
 
     def keyframe(self, action):
         """

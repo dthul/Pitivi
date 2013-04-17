@@ -96,9 +96,10 @@ class VideoPreviewer(Clutter.ScrollActor, Zoomable):
         self._update()
 
     def _update(self, unused_msg_source=None):
+        self.wishlist = []
         if self.callback_id:
             GLib.source_remove(self.callback_id)
-        self.callback_id = GLib.idle_add(self._addVisibleThumbnails, priority=GLib.PRIORITY_LOW)
+        self.callback_id = GLib.idle_add(self._addVisibleThumbnails, priority=GLib.PRIORITY_DEFAULT_IDLE)
 
     def _setupPipeline(self):
         """
@@ -159,7 +160,7 @@ class VideoPreviewer(Clutter.ScrollActor, Zoomable):
             self.queue.append(current_time)
             current_time += self.thumb_period
 
-        GLib.idle_add(self._create_next_thumb, priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self._create_next_thumb, priority=GLib.PRIORITY_DEFAULT_IDLE)
 
     def _create_next_thumb(self):
         if not self.queue:
@@ -319,7 +320,10 @@ class VideoPreviewer(Clutter.ScrollActor, Zoomable):
             if struct_name == "preroll-pixbuf":
                 self._setThumbnail(struct.get_value("stream-time"), struct.get_value("pixbuf"))
         elif message.type == Gst.MessageType.ASYNC_DONE:
-            GLib.idle_add(self._create_next_thumb, priority=GLib.PRIORITY_LOW)
+            if self.wishlist:
+                self._create_next_thumb()
+            else:
+                GLib.idle_add(self._create_next_thumb, priority=GLib.PRIORITY_DEFAULT_IDLE)
         return Gst.BusSyncReply.PASS
 
     def duration_changed(self, unused_bElement, unused_value):

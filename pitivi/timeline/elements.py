@@ -521,6 +521,7 @@ class ClipElement(TimelineElement):
 class TransitionElement(TimelineElement):
     def __init__(self, bElement, track, timeline):
         TimelineElement.__init__(self, bElement, track, timeline)
+        self.isDragged = True
 
     def _createBackground(self, track):
         self.background = RoundedRectangle(0, 0, 5, 5)

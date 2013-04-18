@@ -264,6 +264,7 @@ class TrimHandle(Clutter.Texture):
         self.dragBeginStartX = event_x
         self.dragBeginStartY = event_y
         elem = self.timelineElement.bElement.get_parent()
+        mode = self.timeline._container.getEditionMode(isAHandle=True)
 
         self.timelineElement.setDragged(True)
 
@@ -277,7 +278,7 @@ class TrimHandle(Clutter.Texture):
 
         self._context = EditingContext(elem,
                                        self.timelineElement.timeline.bTimeline,
-                                       GES.EditMode.EDIT_TRIM,
+                                       mode,
                                        edge,
                                        set([]),
                                        None)
@@ -287,6 +288,8 @@ class TrimHandle(Clutter.Texture):
 
     def _dragProgressCb(self, action, actor, delta_x, delta_y):
         # We can't use delta_x here because it fluctuates weirdly.
+        mode = self.timeline._container.getEditionMode(isAHandle=True)
+        self._context.setMode(mode)
         coords = self.dragAction.get_motion_coords()
         delta_x = coords[0] - self.dragBeginStartX
         new_start = self._dragBeginStart + Zoomable.pixelToNs(delta_x)
@@ -519,9 +522,10 @@ class URISourceElement(TimelineElement):
         self.timeline.selection.setToObj(self.bElement, SELECT)
 
     def _dragBeginCb(self, action, actor, event_x, event_y, modifiers):
+        mode = self.timeline._container.getEditionMode()
         self._context = EditingContext(self.bElement,
                                        self.timeline.bTimeline,
-                                       GES.EditMode.EDIT_NORMAL,
+                                       mode,
                                        GES.Edge.EDGE_NONE,
                                        self.timeline.selection.getSelectedTrackElements(),
                                        None)
@@ -544,6 +548,8 @@ class URISourceElement(TimelineElement):
 
     def _dragProgressCb(self, action, actor, delta_x, delta_y):
         # We can't use delta_x here because it fluctuates weirdly.
+        mode = self.timeline._container.getEditionMode()
+        self._context.setMode(mode)
         coords = self.dragAction.get_motion_coords()
         delta_x = coords[0] - self.dragBeginStartX
         delta_y = coords[1] - self.dragBeginStartY

@@ -244,6 +244,16 @@ class TrimHandle(Clutter.Texture):
 
     def _leaveEventCb(self, actor, event):
         self.timelineElement.set_reactive(True)
+
+        actor = self.timelineElement.timeline._container.stage.get_actor_at_pos(Clutter.PickMode.ALL, event.x, event.y)
+        try:
+            element = actor.bElement
+            if element != self.timelineElement.bELement and not self.isSelected:
+                self.hide()
+        except AttributeError:
+            if not self.isSelected:
+                self.hide()
+
         for elem in self.timelineElement.get_children():
             elem.set_reactive(True)
         self.set_from_file(os.path.join(configure.get_pixmap_dir(), "trimbar-normal.png"))

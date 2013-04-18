@@ -271,11 +271,10 @@ class TrimHandle(Clutter.Texture):
         self.props.visible = isSelected
 
     def _dragBeginCb(self, action, actor, event_x, event_y, modifiers):
+        print "trim handle dragged"
         self.dragBeginStartX = event_x
         self.dragBeginStartY = event_y
         elem = self.timelineElement.bElement.get_parent()
-        mode = self.timeline._container.getEditionMode(isAHandle=True)
-
         self.timelineElement.setDragged(True)
 
         if self.isLeft:
@@ -288,7 +287,7 @@ class TrimHandle(Clutter.Texture):
 
         self._context = EditingContext(elem,
                                        self.timelineElement.timeline.bTimeline,
-                                       mode,
+                                       GES.EditMode.EDIT_TRIM,
                                        edge,
                                        set([]),
                                        None)
@@ -298,8 +297,6 @@ class TrimHandle(Clutter.Texture):
 
     def _dragProgressCb(self, action, actor, delta_x, delta_y):
         # We can't use delta_x here because it fluctuates weirdly.
-        mode = self.timeline._container.getEditionMode(isAHandle=True)
-        self._context.setMode(mode)
         coords = self.dragAction.get_motion_coords()
         delta_x = coords[0] - self.dragBeginStartX
         new_start = self._dragBeginStart + Zoomable.pixelToNs(delta_x)

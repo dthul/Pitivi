@@ -631,6 +631,8 @@ class Timeline(Gtk.VBox, Zoomable):
     def _createUi(self):
         self.embed = GtkClutter.Embed()
         self.stage = self.embed.get_stage()
+        self.stage.set_size(200, 200)
+
         self.timeline = TimelineStage(self)
         self.controls = ControlContainer(self.timeline)
         self.zoomBox = ZoomBox(self)
